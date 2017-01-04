@@ -14,17 +14,12 @@ class DistrictRepo
 
   def load_data(input_data)
     file = parse_kindergarten_enrollment_to_file(input_data)
-    binding.pry
-    file_contents = CSV.open file, headers: true, header_converters: :symbol
+    file_contents = CSV.open(file, headers: true, header_converters: :symbol)
 
-    file.each do |row|
-      @districts << District.new({:name => (row[:location].upcase)})
+    file_contents.each do |row|
+      @districts[row[:location]] = District.new({:name => row[:location]})
     end
 
   end
-
-  # def make_district(row)
-  #   district = District.new({:name => row[:location]})
-  # end
 
 end
