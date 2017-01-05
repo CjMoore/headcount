@@ -3,6 +3,7 @@ SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/enrollment'
+require 'pry'
 
 class EnrollmentTest < MiniTest::Test
 
@@ -12,7 +13,7 @@ class EnrollmentTest < MiniTest::Test
                                   2010 => 0.3915, 2011 => 0.35356, 2012 => 0.2677}})
 
     data = {2010 => 0.3915, 2011 => 0.35356, 2012 => 0.2677}
-    binding.pry
+    # binding.pry
     assert_equal "ACADEMY 20", enrollment.name
     assert_equal data, enrollment.kindergarten_data
   end

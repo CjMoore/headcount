@@ -16,7 +16,6 @@ class DistrictRepo
 
   def load_data(input_data)
     file_contents = parse_file_open_with_csv(input_data)
-    # binding.pry
     file_contents.each do |row|
       @districts[row[:location]] = District.new({:name => row[:location]})
     end
@@ -28,11 +27,9 @@ class DistrictRepo
   end
 
   def find_all_matching(name_substring)
-    all_matching = []
-    @districts.keys.each do |district|
-        all_matching << validate_substring_length_for_comparison(district, name_substring)
-    end
-    all_matching.compact
+    @districts.keys.collect do |district|
+        validate_districts_contain_substring(district, name_substring)
+    end.compact
   end
 
 end

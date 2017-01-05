@@ -73,7 +73,6 @@ class DistrictRepoTest < MiniTest::Test
                   './test/fixtures/kindergarten_find_all_edge.csv'
                    }
                 })
-    # binding.pry
 
     assert_equal ["CHEYENNE COUNTY RE-5"], dr.find_all_matching("CHEY")
   end
