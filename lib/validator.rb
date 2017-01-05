@@ -9,4 +9,13 @@ module Validator
     length
   end
 
+  def validate_substring_length_for_comparison(district, name_substring)
+    length = validate_substring_length(name_substring)
+    if length == 0
+      district if district[0] == name_substring.upcase
+    else
+      district if district[0..length-1] == name_substring.upcase
+    end
+
+  end
 end

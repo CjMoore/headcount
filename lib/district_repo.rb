@@ -25,20 +25,15 @@ class DistrictRepo
   end
 
   def find_by_name(name)
-    @districts[name]
+    @districts[name.upcase]
   end
 
   def find_all_matching(name_substring)
     all_matching = []
-    length = validate_substring_length(name_substring)
     @districts.keys.each do |district|
-      if length == 0
-        all_matching << district if district[0] == name_substring.upcase
-      else
-        all_matching << district if district[0..length-1] == name_substring.upcase
-      end
+        all_matching << validate_substring_length_for_comparison(district, name_substring)
     end
-    all_matching
+    all_matching.compact
   end
 
 end

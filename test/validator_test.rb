@@ -2,6 +2,7 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/validator'
 
+
 class ValidatorTest < MiniTest::Test
 
   include Validator
@@ -17,6 +18,13 @@ class ValidatorTest < MiniTest::Test
 
     assert_equal 4, validate_substring_length(name_substring)
   end
-  
+
+  def test_can_return_district_given_valid_substring
+    name_substring = "CHER"
+
+    district = "CHERRY CREEK"
+
+    assert_equal district, validate_substring_length_for_comparison(district, name_substring)
+  end
 
 end
