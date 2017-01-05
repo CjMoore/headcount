@@ -2,6 +2,7 @@ require 'simplecov'
 SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'mocha/mini_test'
 require './lib/district_repo'
 require 'pry'
 
@@ -76,4 +77,22 @@ class DistrictRepoTest < MiniTest::Test
 
     assert_equal ["CHEYENNE COUNTY RE-5"], dr.find_all_matching("CHEY")
   end
+
+  def test_district_repo_makes_enrollment_repo_links
+    dr = DistrictRepo.new
+
+    input_data = {:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kindergarten_find_all_edge.csv'
+                   }
+                }
+
+    # dr.load_data(input_data)
+    # binding.pry
+
+    dr = mock()
+    dr.expect(make_enrollment_repo(input_data)).at_least_once
+    dr.load_data(input_data)
+    end
+
 end
