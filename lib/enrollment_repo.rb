@@ -36,10 +36,10 @@ class EnrollmentRepo
 
   def validate_enrollment_by_district(enrollment_by_district, row)
     if enrollment_by_district.keys.include?(row[:location])
-      enrollment_by_district[row[:location]][row[:timeframe]] = row[:data][0..4]
+      enrollment_by_district[row[:location]][(row[:timeframe].to_i)] = row[:data][0..4].to_f
     else
       enrollment_by_district[row[:location]] = Hash.new
-      enrollment_by_district[row[:location]][row[:timeframe]] = row[:data][0..4]
+      enrollment_by_district[row[:location]][(row[:timeframe].to_i)] = row[:data][0..4].to_f
     end
     enrollment_by_district
   end

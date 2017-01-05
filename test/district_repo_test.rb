@@ -4,6 +4,8 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require 'mocha/mini_test'
 require './lib/district_repo'
+require './lib/enrollment_repo'
+require './lib/enrollment'
 require 'pry'
 
 class DistrictRepoTest < MiniTest::Test
@@ -21,7 +23,6 @@ class DistrictRepoTest < MiniTest::Test
                       "ARICKAREE R-2", "KEENESBURG RE-3(J)", "CHERRY CREEK 5",
                       "MIAMI/YODER 60 JT", "WEST YUMA COUNTY RJ-1",
                       "PARK (ESTES PARK) R-3"]
-
 
     assert_equal district_names, dr.districts.keys
   end
@@ -79,20 +80,18 @@ class DistrictRepoTest < MiniTest::Test
   end
 
   def test_district_repo_makes_enrollment_repo_links
+    # skip
     dr = DistrictRepo.new
 
     input_data = {:enrollment => {
                   :kindergarten =>
-                  './test/fixtures/kindergarten_find_all_edge.csv'
+                  './test/fixtures/kindergarten_basic_fixture.csv'
                    }
                 }
 
-    # dr.load_data(input_data)
-    # binding.pry
-
-    dr = mock()
-    dr.expect(make_enrollment_repo(input_data)).at_least_once
-    dr.load_data(input_data)
+     dr.load_data(input_data)
+     assert_equal 0.489,
+     dr.districts["ACADEMY 20"].enrollment.kindergarten_participation_in_year(2011)
     end
 
 end
