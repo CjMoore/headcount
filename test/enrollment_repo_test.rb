@@ -25,16 +25,6 @@ class EnrollmentRepoTest < MiniTest::Test
     assert_equal Enrollment, er.enrollments.values[0].class
   end
 
-  def test_enrollment_repo_makes_functional_enrollment_objects
-    skip
-    er = EnrollmentRepo.new
+  
 
-    er.load_data({:enrollment => {
-                  :kindergarten =>
-                  './test/fixtures/kindergarten_basic_fixture.csv'
-                  }
-                })
-
-    assert_equal
-  end
 end

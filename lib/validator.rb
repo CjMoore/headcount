@@ -18,14 +18,4 @@ module Validator
     end
   end
 
-  def validate_enrollment_by_district(enrollment_by_district, row)
-    if enrollment_by_district.keys.include?(row[:location])
-      enrollment_by_district[row[:location]][row[:timeframe]] = row[:data]
-    else
-      enrollment_by_district[row[:location]] = Hash.new
-      enrollment_by_district[row[:location]][row[:timeframe]] = row[:data]
-    end
-    enrollment_by_district
-    binding.pry
-  end
 end
