@@ -143,10 +143,11 @@ class HeadcountAnalystTest < MiniTest::Test
     compare = {:against => "COLORADO"}
     year = 2005
 
-    assert_equal 0.96, ha.enrollment_data_average_in_year(year, district, compare)
+    assert_equal 0.96,
+                ha.enrollment_data_average_in_year(year, district, compare)
   end
 
-  def test_kindergarten_participation_rate_variation_trend
+  def test_kindergarten_participation_rate_variation_tren
     dr = DistrictRepository.new
     dr.load_data(({:enrollment => {
                   :kindergarten =>
@@ -158,11 +159,11 @@ class HeadcountAnalystTest < MiniTest::Test
 
     district = ("ACADEMY 20")
     compare = {:against => "COLORADO"}
-    trend_data = {2004 => 1.257, 2005 => 0.96, 2006 => 1.05, 2007 => 0.992,
-                  2008 => 0.717, 2009 => 0.652, 2010 => 0.681, 2011 => 0.727,
+    trend_data = {2004 => 1.258, 2005 => 0.96, 2006 => 1.051, 2007 => 0.992,
+                  2008 => 0.718, 2009 => 0.652, 2010 => 0.681, 2011 => 0.728,
                   2012 => 0.688, 2013 => 0.694, 2014 => 0.661 }
 
     assert_equal trend_data,
-    ha.kindergarten_participation_rate_variation_trend(district, compare)
+           ha.kindergarten_participation_rate_variation_trend(district, compare)
   end
 end

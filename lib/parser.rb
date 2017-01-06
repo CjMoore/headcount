@@ -21,7 +21,7 @@ module Parser
   end
 
   def data(row)
-    (row[:data][0..4]).to_f
+    (row[:data])[0..4].to_f
   end
 
 end

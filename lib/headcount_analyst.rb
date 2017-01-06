@@ -53,4 +53,8 @@ class HeadcountAnalyst
     get_enrollment_data_average(compare[:against])
   end
 
+  # def floor_it(average_in_year)
+  #   (average_in_year * 1000.000).floor / 1000.000
+  # end
+
 end
