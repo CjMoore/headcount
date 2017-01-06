@@ -3,7 +3,7 @@ require_relative 'parser'
 require 'csv'
 require 'pry'
 
-class EnrollmentRepo
+class EnrollmentRepository
   include Parser
 
   attr_reader :enrollment_by_district,
@@ -35,13 +35,17 @@ class EnrollmentRepo
   end
 
   def validate_enrollment_by_district(enrollment_by_district, row)
-    if enrollment_by_district.keys.include?(row[:location])
-      enrollment_by_district[row[:location]][(row[:timeframe].to_i)] = row[:data][0..4].to_f
+    if enrollment_by_district.keys.include?(location(row))
+      enrollment_by_district[location(row)][time_frame(row)] = data(row)
     else
-      enrollment_by_district[row[:location]] = Hash.new
-      enrollment_by_district[row[:location]][(row[:timeframe].to_i)] = row[:data][0..4].to_f
+      enrollment_by_district[location(row)] = Hash.new
+      enrollment_by_district[location(row)][time_frame(row)] = data(row)
     end
     enrollment_by_district
+  end
+
+  def find_by_name(name)
+    @enrollments[name.upcase]
   end
 
 end

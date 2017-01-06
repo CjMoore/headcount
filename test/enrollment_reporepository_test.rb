@@ -2,13 +2,13 @@ require 'simplecov'
 SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/enrollment_repo'
+require './lib/enrollment_repository'
 
 
-class EnrollmentRepoTest < MiniTest::Test
+class EnrollmentRepositoryTest < MiniTest::Test
 
   def test_enrollment_repo_can_gather_data_by_district
-    er = EnrollmentRepo.new
+    er = EnrollmentRepository.new
 
     er.load_data({:enrollment => {
                   :kindergarten =>
@@ -25,6 +25,17 @@ class EnrollmentRepoTest < MiniTest::Test
     assert_equal Enrollment, er.enrollments.values[0].class
   end
 
-  
+  def test_find_by_name
+    er = EnrollmentRepository.new
+
+    er.load_data({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kindergarten_basic_fixture.csv'
+                  }
+                })
+
+
+    assert_equal "ACADEMY 20", er.find_by_name("ACADEMY 20").name
+  end
 
 end

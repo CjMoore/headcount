@@ -29,14 +29,4 @@ class ValidatorTest < MiniTest::Test
     assert_equal district, validate_districts_contain_substring(district, name_substring)
   end
 
-  def test_validate_enrollment_by_district_makes_new_hash_for_new_district
-    skip
-    enrollment_by_district = Hash.new
-
-    row = ACADEMY 20,2007,Percent,0.39159
-
-    refute enrollment_by_district.keys.include?("ACADEMY 20")
-
-  end
-
 end

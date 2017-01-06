@@ -1,12 +1,12 @@
 require_relative 'district'
 require_relative 'parser'
 require_relative 'validator'
-require_relative 'enrollment_repo'
+require_relative 'enrollment_repository'
 require_relative 'enrollment'
 require 'csv'
 require 'pry'
 
-class DistrictRepo
+class DistrictRepository
   include Parser
   include Validator
 
@@ -19,14 +19,14 @@ class DistrictRepo
   def load_data(input_data)
     file_contents = parse_file_open_with_csv(input_data)
     file_contents.each do |row|
-      @districts[row[:location]] = District.new({:name => row[:location]})
+      @districts[(location(row))] = District.new({:name => location(row)})
     end
     district_enrollment_link(make_enrollment_repo(input_data))
     # binding.pry
   end
 
   def make_enrollment_repo(input_data)
-    enroll = EnrollmentRepo.new
+    enroll = EnrollmentRepository.new
     enroll.load_data(input_data)
     enroll.enrollments
   end

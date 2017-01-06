@@ -6,7 +6,7 @@ class District
                 :enrollment
 
   def initialize(name_data)
-    @name = name_data[:name]
+    @name = name_data[:name].upcase
     @enrollment = enrollment
   end
 

@@ -12,4 +12,16 @@ module Parser
     file_contents = CSV.open(file, headers: true, header_converters: :symbol)
   end
 
+  def location(row)
+    row[:location].upcase
+  end
+
+  def time_frame(row)
+    row[:timeframe].to_i
+  end
+
+  def data(row)
+    (row[:data][0..4]).to_f
+  end
+
 end

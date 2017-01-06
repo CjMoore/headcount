@@ -3,15 +3,15 @@ SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'mocha/mini_test'
-require './lib/district_repo'
-require './lib/enrollment_repo'
+require './lib/district_repository'
+require './lib/enrollment_repository'
 require './lib/enrollment'
 require 'pry'
 
-class DistrictRepoTest < MiniTest::Test
+class DistrictRepoitoryTest < MiniTest::Test
 
   def test_load_data_makes_districts
-    dr = DistrictRepo.new
+    dr = DistrictRepository.new
 
     dr.load_data({:enrollment => {
                   :kindergarten =>
@@ -28,7 +28,7 @@ class DistrictRepoTest < MiniTest::Test
   end
 
   def test_district_repo_can_find_by_name
-    dr = DistrictRepo.new
+    dr = DistrictRepository.new
 
     dr.load_data({:enrollment => {
                   :kindergarten =>
@@ -41,7 +41,7 @@ class DistrictRepoTest < MiniTest::Test
   end
 
   def test_district_repo_can_find_all_districts_given_substring
-    dr = DistrictRepo.new
+    dr = DistrictRepository.new
 
     dr.load_data({:enrollment => {
                   :kindergarten =>
@@ -56,7 +56,7 @@ class DistrictRepoTest < MiniTest::Test
   end
 
   def test_district_repo_find_all_returns_empty_array_for_invalid_substring
-    dr = DistrictRepo.new
+    dr = DistrictRepository.new
 
     dr.load_data({:enrollment => {
                   :kindergarten =>
@@ -68,7 +68,7 @@ class DistrictRepoTest < MiniTest::Test
   end
 
   def test_find_all_rejects_names_with_incomplete_match_to_substring
-    dr = DistrictRepo.new
+    dr = DistrictRepository.new
 
     dr.load_data({:enrollment => {
                   :kindergarten =>
@@ -81,7 +81,7 @@ class DistrictRepoTest < MiniTest::Test
 
   def test_district_repo_makes_enrollment_repo_links
     # skip
-    dr = DistrictRepo.new
+    dr = DistrictRepository.new
 
     input_data = {:enrollment => {
                   :kindergarten =>

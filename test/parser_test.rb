@@ -17,4 +17,6 @@ class ParserTest < Minitest::Test
 
     assert_equal 'kindergarten_basic_fixture.csv', parse_kindergarten_enrollment_to_file(input)
   end
+
+
 end
