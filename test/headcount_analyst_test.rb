@@ -79,7 +79,7 @@ class HeadcountAnalystTest < MiniTest::Test
     district = "ACADEMY 20"
     compare = {:against => "COLORADO"}
 
-    assert_equal 0.766,
+    assert_in_delta 0.766,
     ha.kindergarten_participation_rate_variation(district, compare)
   end
 

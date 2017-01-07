@@ -12,8 +12,11 @@ class EnrollmentRepositoryTest < MiniTest::Test
 
     er.load_data({:enrollment => {
                   :kindergarten =>
-                  './test/fixtures/kindergarten_basic_fixture.csv'
+                  './test/fixtures/kindergarten_basic_fixture.csv',
+                  :high_school_graduation =>
+                  './test/fixtures/high_school_basic.csv'
                   }
+
                 })
 
     district_names = ["ACADEMY 20", "ADAMS COUNTY 14", "AKRON R-1",

@@ -17,12 +17,12 @@ class DistrictRepository
   end
 
   def load_data(input_data)
-    file_contents = parse_file_open_with_csv(input_data)
+    files = parse_file_open_with_csv(input_data)
+    file_contents = files[0]
     file_contents.each do |row|
       @districts[(location(row))] = District.new({:name => location(row)})
     end
     district_enrollment_link(make_enrollment_repo(input_data))
-    # binding.pry
   end
 
   def make_enrollment_repo(input_data)
