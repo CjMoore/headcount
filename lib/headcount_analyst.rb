@@ -29,7 +29,7 @@ class HeadcountAnalyst
   end
 
   def kindergarten_participation_correlates_with_high_school_graduation(input)
-    district = check_district_or_statewide(input)
+    district = check_district_for_or_across(input)
     if district.is_a? String
       correlation_fall_in_range?(correlation_value(district))
     else
@@ -139,6 +139,14 @@ class HeadcountAnalyst
       @district_repo.districts.keys[1..-1]
     else
       district[:for]
+    end
+  end
+
+  def check_district_for_or_across(input_data)
+    if input_data.keys.include?(:for)
+      check_district_or_statewide(input_data)
+    else
+      input_data[:across]
     end
   end
 end

@@ -384,4 +384,21 @@ class HeadcountAnalystTest < MiniTest::Test
     refute ha.kindergarten_participation_correlates_with_high_school_graduation(statewide)
   end
 
+  def test_can_get_correlations_across_given_districts
+    dr = DistrictRepository.new
+
+    dr.load_data(({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kinder_positive_correlation.csv',
+                  :high_school_graduation =>
+                  'test/fixtures/hs_postive_correlation.csv'
+                  }
+                }))
+
+    ha = HeadcountAnalyst.new(dr)
+    across = {:across => ["ACADEMY 20", "PARK (ESTES PARK) R-3"]}
+
+    assert ha.kindergarten_participation_correlates_with_high_school_graduation(across)
+  end
+
 end
