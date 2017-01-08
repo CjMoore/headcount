@@ -6,6 +6,7 @@ require 'mocha/mini_test'
 require './lib/district_repository'
 require './lib/enrollment_repository'
 require './lib/enrollment'
+require './lib/statewide_test_repository'
 require 'pry'
 
 class DistrictRepoitoryTest < MiniTest::Test

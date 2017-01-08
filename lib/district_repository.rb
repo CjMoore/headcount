@@ -3,6 +3,8 @@ require_relative 'parser'
 require_relative 'validator'
 require_relative 'enrollment_repository'
 require_relative 'enrollment'
+require_relative 'statewide_test_repository'
+require_relative 'statewide_test'
 require 'csv'
 require 'pry'
 
