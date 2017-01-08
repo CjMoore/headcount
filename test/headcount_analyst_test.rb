@@ -19,7 +19,7 @@ class HeadcountAnalystTest < MiniTest::Test
       assert_equal DistrictRepository, ha.district_repo.class
   end
 
-  def test_analyst_can_get_enrollment_data_from_district_repo
+  def test_analyst_can_get_kindergarten_enrollment_data_from_district_repo
     dr = DistrictRepository.new
     dr.load_data(({:enrollment => {
                   :kindergarten =>
@@ -166,4 +166,152 @@ class HeadcountAnalystTest < MiniTest::Test
     assert_equal trend_data,
            ha.kindergarten_participation_rate_variation_trend(district, compare)
   end
+
+  def test_kindergarten_participation_against_high_school_graduation
+    dr = DistrictRepository.new
+
+    dr.load_data({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kindergarten_steamboat_state.csv',
+                  :high_school_graduation =>
+                  './test/fixtures/steamboat_high_school_colorado.csv'
+                  }
+
+                })
+
+    ha = HeadcountAnalyst.new(dr)
+    district = "STEAMBOAT SPRINGS RE-2"
+
+    assert_in_delta 0.800,
+    ha.kindergarten_participation_against_high_school_graduation(district)
+  end
+
+  def test_analyst_can_get_high_school_data_from_district_repo
+    dr = DistrictRepository.new
+    dr.load_data(({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kindergarten_basic_fixture.csv',
+                  :high_school_graduation =>
+                  './test/fixtures/high_school_basic.csv'
+                  }
+                }))
+
+    ha = HeadcountAnalyst.new(dr)
+    district = "ACADEMY 20"
+    expected = {2011 => 0.895, 2012 => 0.889}
+
+    assert_equal expected, ha.high_school_graduation_data(district)
+  end
+
+  def test_graduation_data_average_takes_data_gives_average
+    dr = DistrictRepository.new
+    dr.load_data(({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kindergarten_basic_fixture.csv',
+                  :high_school_graduation =>
+                  './test/fixtures/high_school_basic.csv'
+                  }
+                }))
+
+    ha = HeadcountAnalyst.new(dr)
+    graduation_data = {2011 => 0.895, 2012 => 0.889}
+
+    assert_in_delta 0.892, ha.graduation_data_average(graduation_data)
+  end
+
+  def test_can_get_graduation_data_average
+    dr = DistrictRepository.new
+    dr.load_data(({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kindergarten_basic_fixture.csv',
+                  :high_school_graduation =>
+                  './test/fixtures/high_school_basic.csv'
+                  }
+                }))
+
+    ha = HeadcountAnalyst.new(dr)
+    district = "ACADEMY 20"
+
+    assert_equal 0.892, ha.get_graduation_data_average(district)
+  end
+
+  def test_kindergarten_participation_correlates_with_graduation
+    dr = DistrictRepository.new
+
+    dr.load_data({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kindergarten_steamboat_state.csv',
+                  :high_school_graduation =>
+                  './test/fixtures/steamboat_high_school_colorado.csv'
+                  }
+
+                })
+
+    ha = HeadcountAnalyst.new(dr)
+    d = ({:for => "STEAMBOAT SPRINGS RE-2"})
+
+    assert ha.kindergarten_participation_correlates_with_high_school_graduation(d)
+  end
+
+  def check_correlation_value
+    dr = DistrictRepository.new
+
+    dr.load_data({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kindergarten_steamboat_state.csv',
+                  :high_school_graduation =>
+                  './test/fixtures/steamboat_high_school_colorado.csv'
+                  }
+
+                })
+
+    ha = HeadcountAnalyst.new(dr)
+    district = "STEAMBOAT SPRINGS RE-2"
+
+    assert_equal 0.892, correlation_value(district)
+  end
+
+  def test_if_correlation_value_falls_in_range
+    dr = DistrictRepository.new
+
+    dr.load_data({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kindergarten_steamboat_state.csv',
+                  :high_school_graduation =>
+                  './test/fixtures/steamboat_high_school_colorado.csv'
+                  }
+
+                })
+
+    ha = HeadcountAnalyst.new(dr)
+
+    correlation_value = 0.892
+    correlation_value2 = 0.1
+
+    assert ha.correlation_fall_in_range?(correlation_value)
+    refute ha.correlation_fall_in_range?(correlation_value2)
+  end
+
+  def test_check_district_or_state_wide
+    dr = DistrictRepository.new
+
+    dr.load_data(({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kindergarten_basic_fixture.csv',
+                  :high_school_graduation =>
+                  './test/fixtures/high_school_basic.csv'
+                  }
+                }))
+
+    ha = HeadcountAnalyst.new(dr)
+    district = {:for => "ACADEMY 20"}
+    statewide = {:for => "STATEWIDE"}
+    districts = ["ACADEMY 20", "ADAMS COUNTY 14", "AKRON R-1", "ARICKAREE R-2",
+                  "KEENESBURG RE-3(J)", "CHERRY CREEK 5", "MIAMI/YODER 60 JT",
+                  "WEST YUMA COUNTY RJ-1", "PARK (ESTES PARK) R-3"]
+
+    assert_equal "ACADEMY 20", ha.check_district_or_statewide(district)
+    assert_equal districts, ha.check_district_or_statewide(statewide)
+  end
+
 end
