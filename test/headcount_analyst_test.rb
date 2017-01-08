@@ -304,14 +304,84 @@ class HeadcountAnalystTest < MiniTest::Test
                 }))
 
     ha = HeadcountAnalyst.new(dr)
-    district = {:for => "ACADEMY 20"}
+    district = {:for => "ADAMS COUNTY 14"}
     statewide = {:for => "STATEWIDE"}
-    districts = ["ACADEMY 20", "ADAMS COUNTY 14", "AKRON R-1", "ARICKAREE R-2",
+    districts = ["ADAMS COUNTY 14", "AKRON R-1", "ARICKAREE R-2",
                   "KEENESBURG RE-3(J)", "CHERRY CREEK 5", "MIAMI/YODER 60 JT",
                   "WEST YUMA COUNTY RJ-1", "PARK (ESTES PARK) R-3"]
 
-    assert_equal "ACADEMY 20", ha.check_district_or_statewide(district)
+    assert_equal "ADAMS COUNTY 14", ha.check_district_or_statewide(district)
     assert_equal districts, ha.check_district_or_statewide(statewide)
+  end
+
+  def test_can_get_correlation_truth_value_for_each_district_given
+    dr = DistrictRepository.new
+
+    dr.load_data(({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kinder_positive_correlation.csv',
+                  :high_school_graduation =>
+                  'test/fixtures/hs_postive_correlation.csv'
+                  }
+                }))
+
+    ha = HeadcountAnalyst.new(dr)
+    statewide = {:for => "STATEWIDE"}
+    expected = [true, true, false, true]
+    districts = ha.check_district_or_statewide(statewide)
+
+    assert_equal expected, ha.correlation_values_for_districts(districts)
+  end
+
+  def test_get_percentage_of_positive_correlation
+    dr = DistrictRepository.new
+
+    dr.load_data(({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kinder_positive_correlation.csv',
+                  :high_school_graduation =>
+                  'test/fixtures/hs_postive_correlation.csv'
+                  }
+                }))
+
+    ha = HeadcountAnalyst.new(dr)
+    correlation_values = [true, true, false, true]
+
+    assert_equal 0.75, ha.calculate_positive_correlation(correlation_values)
+  end
+
+  def test_positive_statewide_correlation_values
+    dr = DistrictRepository.new
+
+    dr.load_data(({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kinder_positive_correlation.csv',
+                  :high_school_graduation =>
+                  'test/fixtures/hs_postive_correlation.csv'
+                  }
+                }))
+
+    ha = HeadcountAnalyst.new(dr)
+    statewide = {:for => "STATEWIDE"}
+
+    assert ha.kindergarten_participation_correlates_with_high_school_graduation(statewide)
+  end
+
+  def test_negative_statewide_correlation_values
+    dr = DistrictRepository.new
+
+    dr.load_data(({:enrollment => {
+                  :kindergarten =>
+                  './test/fixtures/kinder_negative_correlation.csv',
+                  :high_school_graduation =>
+                  'test/fixtures/hs_negative_correlation.csv'
+                  }
+                }))
+
+    ha = HeadcountAnalyst.new(dr)
+    statewide = {:for => "STATEWIDE"}
+
+    refute ha.kindergarten_participation_correlates_with_high_school_graduation(statewide)
   end
 
 end

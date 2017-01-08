@@ -15,12 +15,12 @@ class HeadcountAnalyst
   end
 
   def kindergarten_participation_rate_variation_trend(district, compare)
-    rate_variation_trend = Hash.new
+    variation_trend = Hash.new
     years = get_years_kindergarten(district)
     years.each do |year|
-      rate_variation_trend[year] = enrollment_data_average_in_year(year, district, compare)
+      variation_trend[year] = enrollment_data_average_in_year(year, district, compare)
     end
-    rate_variation_trend
+    variation_trend
   end
 
   def kindergarten_participation_against_high_school_graduation(district)
@@ -28,9 +28,42 @@ class HeadcountAnalyst
     kindergarten_participation_rate_variation(district, compare)/graduation_rate_variation(district)
   end
 
-  def kindergarten_participation_correlates_with_high_school_graduation(district)
-    district_name = district[:for]
-    correlation_fall_in_range?(correlation_value(district_name))
+  def kindergarten_participation_correlates_with_high_school_graduation(input)
+    district = check_district_or_statewide(input)
+    if district.is_a? String
+      correlation_fall_in_range?(correlation_value(district))
+    else
+      check_all_correlation_values(district)
+    end
+
+  end
+
+  def correlation_values_for_districts(districts)
+    districts.map do |district|
+      correlation_fall_in_range?(correlation_value(district))
+    end
+  end
+
+  def calculate_positive_correlation(correlation_values)
+    index = 0
+    correlation_values.each do |value|
+      if value == true
+        index += 1
+      end
+    end
+    index.to_f/correlation_values.count.to_f
+  end
+
+  def get_correlation_values_for_districts(districts)
+    calculate_positive_correlation(correlation_values_for_districts(districts))
+  end
+
+  def check_all_correlation_values(districts)
+    positive_percent = get_correlation_values_for_districts(districts)
+    if positive_percent > 0.70
+      true
+    else
+    end
   end
 
   def correlation_value(district)
@@ -103,7 +136,7 @@ class HeadcountAnalyst
 
   def check_district_or_statewide(district)
     if district[:for] == "STATEWIDE"
-      @district_repo.districts.keys
+      @district_repo.districts.keys[1..-1]
     else
       district[:for]
     end
