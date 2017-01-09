@@ -1,6 +1,6 @@
 require 'csv'
 
-module Parser
+module CsvParser
 
   def parse_kindergarten_enrollment_to_file(input_data)
     file = input_data[:enrollment][:kindergarten]
@@ -13,7 +13,6 @@ module Parser
   end
 
   def parse_file_open_with_csv(input_data)
-    # binding.pry
     files = [parse_kindergarten_enrollment_to_file(input_data),
               parse_high_school_graduation_to_file(input_data)]
     files.map do |file|

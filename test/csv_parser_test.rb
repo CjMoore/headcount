@@ -2,13 +2,13 @@ require 'simplecov'
 SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/parser'
+require './lib/csv_parser'
 require 'pry'
 
 
-class ParserTest < Minitest::Test
+class CsvParserTest < Minitest::Test
 
-  include Parser
+  include CsvParser
 
   def test_parse_input_data_to_file_returns_file
     input = {:enrollment => {

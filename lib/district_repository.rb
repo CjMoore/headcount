@@ -1,6 +1,6 @@
 require_relative 'district'
-require_relative 'parser'
-require_relative 'validator'
+require_relative 'csv_parser'
+require_relative 'substring_validator'
 require_relative 'enrollment_repository'
 require_relative 'enrollment'
 require_relative 'statewide_test_repository'
@@ -9,8 +9,8 @@ require 'csv'
 require 'pry'
 
 class DistrictRepository
-  include Parser
-  include Validator
+  include CsvParser
+  include SubstringValidator
 
   attr_reader :districts
 

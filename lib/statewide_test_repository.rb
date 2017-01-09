@@ -1,14 +1,18 @@
 require_relative 'statewide_test'
-require_relative 'parser'
+require_relative 'csv_parser'
 
 class StatewideTestRepository
 
-  include Parser
+  include CsvParser
 
   attr_accessor :tests
 
   def initialize
     @tests = tests
+  end
+
+  def load_data(input_data)
+
   end
 
 end

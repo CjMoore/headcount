@@ -81,7 +81,6 @@ class DistrictRepoitoryTest < MiniTest::Test
   end
 
   def test_district_repo_makes_enrollment_repo_links
-    # skip
     dr = DistrictRepository.new
 
     input_data = {:enrollment => {

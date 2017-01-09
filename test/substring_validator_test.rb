@@ -2,12 +2,10 @@ require 'simplecov'
 SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/validator'
+require './lib/substring_validator'
 
-
-class ValidatorTest < MiniTest::Test
-
-  include Validator
+class SubstringValidatorTest < MiniTest::Test
+  include SubstringValidator
 
   def test_validator_validates_substring_length_with_single_letter
     name_substring = "A"
@@ -28,5 +26,4 @@ class ValidatorTest < MiniTest::Test
 
     assert_equal district, validate_districts_contain_substring(district, name_substring)
   end
-
 end

@@ -1,7 +1,8 @@
 class Enrollment
 
   attr_reader :name,
-              :kindergarten_data
+              :kindergarten_data,
+              :high_school_graduation_data
 
   def initialize(input_data)
     @name = input_data[:name]

@@ -1,10 +1,12 @@
 require_relative 'enrollment'
-require_relative 'parser'
+require_relative 'csv_parser'
+require_relative 'data_parser'
 require 'csv'
 require 'pry'
 
 class EnrollmentRepository
-  include Parser
+  include CsvParser
+  include DataParser
 
   attr_reader :enrollment_by_district,
               :enrollments

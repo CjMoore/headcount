@@ -1,4 +1,4 @@
-module Validator
+module SubstringValidator
 
   def validate_substring_length(name_substring)
     if name_substring.length == 1
@@ -17,5 +17,4 @@ module Validator
       district if district[0..length-1] == name_substring.upcase
     end
   end
-
 end
