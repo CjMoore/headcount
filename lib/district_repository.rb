@@ -19,8 +19,8 @@ class DistrictRepository
   end
 
   def load_data(input_data)
-    files = parse_file_open_with_csv(input_data)
-    file_contents = files[0]
+    enrollment_data = parse_file_open_with_csv(input_data[:enrollment])
+    file_contents = enrollment_data[0]
     file_contents.each do |row|
       @districts[(location(row))] = District.new({:name => location(row)})
     end

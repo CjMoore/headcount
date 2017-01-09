@@ -12,7 +12,7 @@ class StatewideTestRepository
   end
 
   def load_data(input_data)
-
+    files = []
   end
 
 end

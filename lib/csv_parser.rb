@@ -2,22 +2,28 @@ require 'csv'
 
 module CsvParser
 
-  def parse_kindergarten_enrollment_to_file(input_data)
-    file = input_data[:enrollment][:kindergarten]
-    file
-  end
-
-  def parse_high_school_graduation_to_file(input_data)
-    file = input_data[:enrollment][:high_school_graduation]
-    file
-  end
-
   def parse_file_open_with_csv(input_data)
-    files = [parse_kindergarten_enrollment_to_file(input_data),
-              parse_high_school_graduation_to_file(input_data)]
+    files = check_enrollment_testing_or_economic_files(input_data)
     files.map do |file|
       CSV.open(file, headers: true, header_converters: :symbol) unless file.nil?
     end
+  end
+
+  def check_enrollment_testing_or_economic_files(input_data)
+    if input_data.keys.include?(:kindergarten)
+      get_enrollment_files(input_data)
+    elsif input_data.keys.include?(:third_grade)
+      get_testing_files(input_data)
+    end
+  end
+
+  def get_enrollment_files(input_data)
+    files = [input_data[:kindergarten], input_data[:high_school_graduation]]
+  end
+
+  def get_testing_files(input_data)
+    files = [input_data[:third_grade], input_data[:eighth_grade],
+              input_data[:math], input_data[:reading], input_data[:writing]]
   end
 
   def location(row)

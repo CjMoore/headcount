@@ -24,7 +24,8 @@ class StatewideTestRepositoryTest < MiniTest::Test
     district_names = ["ACADEMY 20", "ADAMS COUNTY 14", "AGUILAR REORGANIZED 6"]
 
     assert_equal district_names, str.tests.keys
+    assert_equal StatewideTest, str.tests.values[0].class
   end
 
-  
+
 end
