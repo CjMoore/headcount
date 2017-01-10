@@ -14,6 +14,8 @@ module CsvParser
       get_enrollment_files(input_data)
     elsif input_data.keys.include?(:third_grade)
       get_testing_files(input_data)
+    elsif input_data.keys.include?(:title_i)
+      get_economic_files(input_data)
     end
   end
 
@@ -26,20 +28,37 @@ module CsvParser
               input_data[:math], input_data[:reading], input_data[:writing]]
   end
 
+  def get_economic_files(input_data)
+    files = [input_data[:median_household_income],
+              input_data[:children_in_poverty],
+              input_data[:free_or_reduced_price_lunch],
+              input_data[:title_i]]
+
+  end
+
   def location(row)
     row[:location].upcase
   end
 
   def time_frame(row)
-    row[:timeframe].to_i
+    if row[:dataformat] == "Currency"
+      time_frame = row[:timeframe].split('-')
+      time_frame.map {|year| year.to_i}
+    else
+      row[:timeframe].to_i
+    end
   end
 
   def data(row)
     unless row[:data].nil?
-      if row[:data] == "N/A"
-        row[:data]
-      else
-        (row[:data])[0..4].to_f
+      if row[:dataformat] == "Percent"
+        if row[:data] == "N/A"
+          row[:data]
+        else
+          (row[:data])[0..4].to_f
+        end
+      elsif row[:dataformat] == 'Currency' || 'Number'
+        row[:data].to_i
       end
     end
   end
@@ -50,6 +69,14 @@ module CsvParser
 
   def race(row)
     (row[:race_ethnicity].capitalize)
+  end
+
+  def poverty_level(row)
+    row[:poverty_level].downcase
+  end
+
+  def data_format(row)
+    row[:dataformat].downcase.to_sym
   end
 
 end

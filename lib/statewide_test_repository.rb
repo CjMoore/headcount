@@ -18,9 +18,6 @@ class StatewideTestRepository
     all_files = parse_file_open_with_csv(input_data[:statewide_testing])
     files = get_files_by_type(all_files)
 
-    data_by_district = Hash.new
-
-    # binding.pry
     files.each do |key, value|
       files[key] = get_statewide_testing_data_by_file(key, value)
     end

@@ -119,4 +119,33 @@ class DistrictRepoitoryTest < MiniTest::Test
     district.statewide_test.proficient_for_subject_by_race_in_year(:math, :asian, 2011)
   end
 
+  def test_district_repo_makes_economic_profile_links
+    input_data = {
+                    :enrollment => {
+                      :kindergarten => "./test/fixtures/kinder_matching.csv",
+                      :high_school_graduation => "./test/fixtures/hs_matching.csv",
+                    },
+                    :statewide_testing => {
+                      :third_grade => "./test/fixtures/third_grade_basic.csv",
+                      :eighth_grade => "./test/fixtures/eighth_grade_basic.csv",
+                      :math => "./test/fixtures/math_basic.csv",
+                      :reading => "./test/fixtures/reading_basic.csv",
+                      :writing => "./test/fixtures/writing_basic.csv"
+                    },
+                    :economic_profile => {
+                      :median_household_income => "./test/fixtures/median_income_basic.csv",
+                      :children_in_poverty => "./test/fixtures/children_poverty_basic.csv",
+                      :free_or_reduced_price_lunch => "./test/fixtures/free_reduced_lunch_basic.csv",
+                      :title_i => "./test/fixtures/title_i_basic.csv"
+                            }
+                  }
+
+    dr = DistrictRepository.new
+    dr.load_data(input_data)
+
+    district = dr.find_by_name("ACADEMY 20")
+
+    assert_in_delta 0.064, district.economic_profile.children_in_poverty_in_year(2012), 0.005
+  end
+
 end

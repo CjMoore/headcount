@@ -40,6 +40,22 @@ class CsvParserTest < Minitest::Test
     assert_equal expected, check_enrollment_testing_or_economic_files(input)
   end
 
+  def test_can_parse_economic_profile_files
+    input = {:median_household_income => "./test/fixtures/median_income_basic.csv",
+    :children_in_poverty => "./test/fixtures/children_poverty_basic.csv",
+    :free_or_reduced_price_lunch => "./test/fixtures/free_reduced_lunch_basic.csv",
+    :title_i => "./test/fixtures/title_i_basic.csv"}
+
+    expected = ["./test/fixtures/median_income_basic.csv",
+                "./test/fixtures/children_poverty_basic.csv",
+                "./test/fixtures/free_reduced_lunch_basic.csv",
+                "./test/fixtures/title_i_basic.csv"]
+
+    assert_equal expected, get_economic_files(input)
+    assert_equal expected, check_enrollment_testing_or_economic_files(input)
+  end
+  
+
   # def test_location_gets_location
   #   row = <CSV::Row location:"ACADEMY 20" timeframe:"2007" dataformat:"Percent" data:"0.39159">
   #

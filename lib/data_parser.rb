@@ -73,7 +73,6 @@ module DataParser
   def parse_proficient_data(grade_data)
     sorted_grade_data = Hash.new
     years = grade_data[:math].keys
-    # binding.pry
     years.each do |year|
       sorted_grade_data[year] = {:math => grade_data[:math][year],
                                   :reading => grade_data[:reading][year],
@@ -94,7 +93,83 @@ module DataParser
     data_by_race
   end
 
+  def parse_economic_data_by_file(key, value)
+    check_economic_key(key, value)
+  end
 
+  def check_economic_key(key, value)
+    if key == :median_household_income
+      parse_median_income_data(value)
+    elsif key == :free_or_reduced_price_lunch
+      parse_lunch_data(value)
+    else
+      parse_economic_data_by_district(value)
+    end
+  end
+
+  def parse_economic_data_by_district(value)
+    economic_data_by_district = Hash.new
+    value.each do |row|
+      if economic_data_by_district.keys.include?(location(row))
+        check_data_format_for_percent_or_number(row, economic_data_by_district)
+      else
+        economic_data_by_district[location(row)] = Hash.new
+        check_data_format_for_percent_or_number(row, economic_data_by_district)
+      end
+    end
+    economic_data_by_district
+  end
+
+  def check_data_format_for_percent_or_number(row, economic_data_by_district)
+    if data_format(row) == :percent
+      economic_data_by_district[location(row)][time_frame(row)] = data(row)
+    end
+  end
+
+  def parse_lunch_data(value)
+    lunch_by_district = Hash.new
+    value.each do |row|
+      if check_free_lunch_and_reduced?(row)
+        if lunch_by_district.keys.include?(location(row))
+          check_data_format_for_percent_or_total(row, lunch_by_district)
+        else
+          lunch_by_district[location(row)] = Hash.new
+          lunch_by_district[location(row)][time_frame(row)] = Hash.new
+          check_data_format_for_percent_or_total(row, lunch_by_district)
+        end
+      end
+    end
+    lunch_by_district
+  end
+
+  def check_data_format_for_percent_or_total(row, lunch_by_district)
+    if data_format(row) == :percent
+      lunch_by_district[location(row)][time_frame(row)][:percent] = data(row)
+    else
+      lunch_by_district[location(row)][time_frame(row)][:total] = data(row)
+    end
+    lunch_by_district
+  end
+
+  def check_free_lunch_and_reduced?(row)
+    if poverty_level(row) == 'eligible for free or reduced lunch'
+      true
+    else
+    end
+  end
+
+  def parse_median_income_data(value)
+    median_data_by_district = Hash.new
+    value.each do |row|
+      if median_data_by_district.keys.include?(location(row))
+        median_data_by_district[location(row)][time_frame(row)] = data(row)
+      else
+        median_data_by_district[location(row)] = Hash.new
+        median_data_by_district[location(row)][time_frame(row)] = data(row)
+      end
+    end
+    median_data_by_district
+  end
 
   def validate_file(file)
     if file == nil

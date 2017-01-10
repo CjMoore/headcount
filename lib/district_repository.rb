@@ -5,6 +5,8 @@ require_relative 'enrollment_repository'
 require_relative 'enrollment'
 require_relative 'statewide_test_repository'
 require_relative 'statewide_test'
+require_relative 'economic_profile_repository'
+require_relative 'economic_profile'
 require 'csv'
 require 'pry'
 
@@ -35,6 +37,9 @@ class DistrictRepository
       district_enrollment_link(make_enrollment_repo(input_data))
       if input_data.keys.include?(:statewide_testing)
         district_testing_link(make_statewide_testing_repo(input_data))
+        if input_data.keys.include?(:economic_profile)
+          district_economic_profile_link(make_economic_repo(input_data))
+        end
       end
     end
   end
@@ -55,12 +60,24 @@ class DistrictRepository
     statewide_test = StatewideTestRepository.new
     statewide_test.load_data(input_data)
     statewide_test.tests
-    # binding.pry
   end
 
   def district_testing_link(testing_data)
     @districts.each do |district|
       district[1].statewide_test = testing_data[district[0]]
+    end
+  end
+
+  def make_economic_repo(input_data)
+    economic_profile = EconomicProfileRepository.new
+    economic_profile.load_data(input_data)
+    economic_profile.profiles
+    # binding.pry
+  end
+
+  def district_economic_profile_link(economic_data)
+    @districts.each do |district|
+      district[1].economic_profile = economic_data[district[0]]
     end
   end
 
