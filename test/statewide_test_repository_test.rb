@@ -3,11 +3,8 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/statewide_test_repository'
-# require './lib/csv_parser'
-
 
 class StatewideTestRepositoryTest < MiniTest::Test
-  # include CsvParser
 
   def test_statewide_repository_can_gather_data_by_district
     str = StatewideTestRepository.new
