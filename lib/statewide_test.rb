@@ -46,7 +46,7 @@ class StatewideTest
       race_ethnicity = race_ethnicity.to_s.capitalize
       get_data_by_race(race_ethnicity, race_data)
     else
-      # raise UnknownRaceError
+      unknown_race
     end
   end
 
@@ -62,7 +62,7 @@ class StatewideTest
     if SUBJECTS.include?(subject)
       proficiency_given_subject_grade_year(check_grade(grade), subject, year)
     else
-      # raise UnknownDataError
+      unknown_data
     end
   end
 
@@ -79,8 +79,15 @@ class StatewideTest
     if SUBJECTS.include?(subject) && data_by_race
       data_by_race[year][subject]
     else
-      # raise UnknownDataError
+      unknown_data
     end
   end
 
+  def unknown_data
+    raise UnknownDataError
+  end
+
+  def unknown_race
+    raise UnknownRaceError
+  end
 end
