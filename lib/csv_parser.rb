@@ -35,7 +35,21 @@ module CsvParser
   end
 
   def data(row)
-    (row[:data])[0..4].to_f
+    unless row[:data].nil?
+      if row[:data] == "N/A"
+        row[:data]
+      else
+        (row[:data])[0..4].to_f
+      end
+    end
+  end
+
+  def score(row)
+    (row[:score].downcase.to_sym)
+  end
+
+  def race(row)
+    (row[:race_ethnicity].capitalize)
   end
 
 end

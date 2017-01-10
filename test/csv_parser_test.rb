@@ -1,5 +1,5 @@
-require 'simplecov'
-SimpleCov.start
+# require 'simplecov'
+# SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/csv_parser'
@@ -40,11 +40,11 @@ class CsvParserTest < Minitest::Test
     assert_equal expected, check_enrollment_testing_or_economic_files(input)
   end
 
-
   # def test_location_gets_location
   #   row = <CSV::Row location:"ACADEMY 20" timeframe:"2007" dataformat:"Percent" data:"0.39159">
   #
   #   assert_equal "ACADEMY 20", location(row)
   # end
+
 
 end

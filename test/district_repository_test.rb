@@ -1,8 +1,7 @@
-require 'simplecov'
-SimpleCov.start
+# require 'simplecov'
+# SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require 'mocha/mini_test'
 require './lib/district_repository'
 require './lib/enrollment_repository'
 require './lib/enrollment'
@@ -93,6 +92,28 @@ class DistrictRepoitoryTest < MiniTest::Test
      dr.load_data(input_data)
      assert_equal 0.489,
      dr.districts["ACADEMY 20"].enrollment.kindergarten_participation_in_year(2011)
-    end
+  end
+
+  def test_district_repo_makes_statewide_testing_repo_links
+    dr = DistrictRepository.new
+
+    input_data = ({
+                    :enrollment => {
+                      :kindergarten => "./test/fixtures/kindergarten_basic_fixture.csv",
+                      :high_school_graduation => "./test/fixtures/high_school_basic.csv",
+                    },
+                    :statewide_testing => {
+                      :third_grade => "./test/fixtures/third_grade_basic.csv",
+                      :eighth_grade => "./test/fixtures/eighth_grade_basic.csv",
+                      :math => "./test/fixtures/math_basic.csv",
+                      :reading => "./test/fixtures/reading_basic.csv",
+                      :writing => "./test/fixtures/writing_basic.csv"
+                    }
+                  })
+
+    dr.load_data(input_data)
+    district = dr.find_by_name("ACADEMY 20")
+
+    assert_equal 0.816, district.statewide_test.
 
 end
