@@ -3,8 +3,10 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/statewide_test'
+require './lib/exceptions'
 
 class StatewideTestTest < MiniTest::Test
+  include Exceptions
 
   def test_statewide_test_can_take_name
     input_data = {:name => "ACADEMY 20"}
@@ -122,5 +124,20 @@ class StatewideTestTest < MiniTest::Test
     statewide = StatewideTest.new(input_data)
 
     assert_equal 0.662, statewide.proficient_for_subject_by_race_in_year(:reading, :black, 2011)
+  end
+
+  def test_bad_input_raises_error
+    input_data = {:third_grade => {:math => {2010 => 0.987, 2011 => 0.123},
+                                  :reading => {2010 => 0.987, 2011 => 0.123},
+                                  :writing => {2010 => 0.987, 2011 =>0.123}},
+                  :eighth_grade => {:math => {2010 => 0.987, 2011 => 0.123},
+                                    :reading => {2010 => 0.987, 2011 => 0.123},
+                                    :writing => {2010 => 0.987, 2011 => 0.123}}}
+
+    statewide = StatewideTest.new(input_data)
+
+    assert_raises(UnknownDataError) do
+      statewide.proficient_for_subject_by_grade_in_year(:pizza, 8, 2011)
+    end
   end
 end

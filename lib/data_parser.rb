@@ -84,7 +84,6 @@ module DataParser
   def get_data_by_race(race, race_data)
     data_by_race = Hash.new
     years = race_data[:math][race].keys
-    # binding.pry
     years.each do |year|
       data_by_race[year] = {:math => race_data[:math][race][year],
                             :reading => race_data[:reading][race][year],
@@ -110,15 +109,20 @@ module DataParser
   def parse_economic_data_by_district(value)
     economic_data_by_district = Hash.new
     value.each do |row|
-      if economic_data_by_district.keys.include?(location(row))
-        check_data_format_for_percent_or_number(row, economic_data_by_district)
-      else
-        economic_data_by_district[location(row)] = Hash.new
-        check_data_format_for_percent_or_number(row, economic_data_by_district)
-      end
+      check_economic_data_already_has_district(row, economic_data_by_district)
     end
     economic_data_by_district
   end
+
+  def check_economic_data_already_has_district(row, economic_data_by_district)
+    if economic_data_by_district.keys.include?(location(row))
+      check_data_format_for_percent_or_number(row, economic_data_by_district)
+    else
+      economic_data_by_district[location(row)] = Hash.new
+      check_data_format_for_percent_or_number(row, economic_data_by_district)
+    end
+  end
+
 
   def check_data_format_for_percent_or_number(row, economic_data_by_district)
     if data_format(row) == :percent
@@ -130,16 +134,20 @@ module DataParser
     lunch_by_district = Hash.new
     value.each do |row|
       if check_free_lunch_and_reduced?(row)
-        if lunch_by_district.keys.include?(location(row))
-          check_data_format_for_percent_or_total(row, lunch_by_district)
-        else
-          lunch_by_district[location(row)] = Hash.new
-          lunch_by_district[location(row)][time_frame(row)] = Hash.new
-          check_data_format_for_percent_or_total(row, lunch_by_district)
-        end
+        check_lunch_data_has_district(row, lunch_by_district)
       end
     end
     lunch_by_district
+  end
+
+  def check_lunch_data_has_district(row, lunch_by_district)
+    if lunch_by_district.keys.include?(location(row))
+      check_data_format_for_percent_or_total(row, lunch_by_district)
+    else
+      lunch_by_district[location(row)] = Hash.new
+      lunch_by_district[location(row)][time_frame(row)] = Hash.new
+      check_data_format_for_percent_or_total(row, lunch_by_district)
+    end
   end
 
   def check_data_format_for_percent_or_total(row, lunch_by_district)
@@ -161,14 +169,18 @@ module DataParser
   def parse_median_income_data(value)
     median_data_by_district = Hash.new
     value.each do |row|
-      if median_data_by_district.keys.include?(location(row))
-        median_data_by_district[location(row)][time_frame(row)] = data(row)
-      else
-        median_data_by_district[location(row)] = Hash.new
-        median_data_by_district[location(row)][time_frame(row)] = data(row)
-      end
+      make_median_data_by_district(row, median_data_by_district)
     end
     median_data_by_district
+  end
+
+  def make_median_data_by_district(row, median_data_by_district)
+    if median_data_by_district.keys.include?(location(row))
+      median_data_by_district[location(row)][time_frame(row)] = data(row)
+    else
+      median_data_by_district[location(row)] = Hash.new
+      median_data_by_district[location(row)][time_frame(row)] = data(row)
+    end
   end
 
   def validate_file(file)
@@ -178,6 +190,4 @@ module DataParser
       file
     end
   end
-
-
 end

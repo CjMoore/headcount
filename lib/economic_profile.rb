@@ -1,6 +1,7 @@
-
+require_relative 'exceptions'
 
 class EconomicProfile
+  include Exceptions
 
   attr_reader :name,
               :median_income_data,
@@ -22,7 +23,7 @@ class EconomicProfile
       if years.include?(year)
         income = @median_income_data[years]
       else
-        #UnknownDataError
+        # raise Exceptions::UnknownDataError
       end
     end
     income
@@ -60,7 +61,7 @@ class EconomicProfile
     if data.keys.include?(year)
       true
     else
-      #UnknownDataError
+      raise Exceptions::UnknownDataError
     end
   end
 

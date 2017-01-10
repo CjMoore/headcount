@@ -17,6 +17,7 @@ class DataParserTest < MiniTest::Test
     input = {:kindergarten => './test/fixtures/kindergarten_basic_fixture.csv'}
 
     csv = parse_file_open_with_csv(input)
+    binding.pry
     expected = {"ACADEMY 20" => {2007 => 0.391, 2011=> 0.489}}
 
     assert_equal expected, get_enrollment_data_by_district(csv[0])
@@ -27,7 +28,7 @@ class DataParserTest < MiniTest::Test
 
   end
 
-  
+
 
 
 end

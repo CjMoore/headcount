@@ -1,7 +1,9 @@
 require_relative 'data_parser'
+require_relative 'exceptions'
 
 class StatewideTest
   include DataParser
+  include Exceptions
 
   SUBJECTS = [:math, :reading, :writing]
   RACES = [:asian, :black, :pacific_islander, :hispanic, :native_american,
@@ -46,7 +48,7 @@ class StatewideTest
       race_ethnicity = race_ethnicity.to_s.capitalize
       get_data_by_race(race_ethnicity, race_data)
     else
-      unknown_race
+      raise Exceptions::UnknownDataError
     end
   end
 
@@ -62,12 +64,11 @@ class StatewideTest
     if SUBJECTS.include?(subject)
       proficiency_given_subject_grade_year(check_grade(grade), subject, year)
     else
-      unknown_data
+      raise Exceptions::UnknownDataError
     end
   end
 
   def proficiency_given_subject_grade_year(grade, subject, year)
-    # binding.pry
     grade[subject][year]
   end
 
@@ -79,15 +80,7 @@ class StatewideTest
     if SUBJECTS.include?(subject) && data_by_race
       data_by_race[year][subject]
     else
-      unknown_data
+      raise Exceptions::UnknownDataError
     end
-  end
-
-  def unknown_data
-    raise UnknownDataError
-  end
-
-  def unknown_race
-    raise UnknownRaceError
   end
 end
