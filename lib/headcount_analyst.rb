@@ -83,11 +83,20 @@ class HeadcountAnalyst
   end
 
   def kindergarten_enrollment_data(district)
-    @district_repo.districts[district].enrollment.kindergarten_participation_by_year
+    validate_na_data(@district_repo.districts[district].enrollment.kindergarten_participation_by_year)
+    # binding.pry
+  end
+
+  def validate_na_data(data_set)
+    data_set.each do |key, value|
+      if value.is_a? String
+        data_set[key] = 0.00
+      end
+    end
   end
 
   def high_school_graduation_data(district)
-    @district_repo.districts[district].enrollment.graduation_rate_by_year
+    validate_na_data(@district_repo.districts[district].enrollment.graduation_rate_by_year)
   end
 
   def enrollment_data_average(enrollment_data)

@@ -6,6 +6,7 @@ require './lib/district_repository'
 require './lib/enrollment_repository'
 require './lib/enrollment'
 require './lib/statewide_test_repository'
+require './lib/statewide_test'
 require 'pry'
 
 class DistrictRepoitoryTest < MiniTest::Test
@@ -99,8 +100,8 @@ class DistrictRepoitoryTest < MiniTest::Test
 
     input_data = ({
                     :enrollment => {
-                      :kindergarten => "./test/fixtures/kindergarten_basic_fixture.csv",
-                      :high_school_graduation => "./test/fixtures/high_school_basic.csv",
+                      :kindergarten => "./test/fixtures/kinder_matching.csv",
+                      :high_school_graduation => "./test/fixtures/hs_matching.csv",
                     },
                     :statewide_testing => {
                       :third_grade => "./test/fixtures/third_grade_basic.csv",
@@ -114,6 +115,8 @@ class DistrictRepoitoryTest < MiniTest::Test
     dr.load_data(input_data)
     district = dr.find_by_name("ACADEMY 20")
 
-    assert_equal 0.816, district.statewide_test.
+    assert_equal 0.816,
+    district.statewide_test.proficient_for_subject_by_race_in_year(:math, :asian, 2011)
+  end
 
 end
