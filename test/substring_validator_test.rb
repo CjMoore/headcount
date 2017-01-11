@@ -2,7 +2,7 @@
 # SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/substring_validator'
+require_relative '../../headcount/lib/substring_validator'
 
 class SubstringValidatorTest < MiniTest::Test
   include SubstringValidator

@@ -108,6 +108,7 @@ module DataParser
 
   def parse_economic_data_by_district(value)
     economic_data_by_district = Hash.new
+    # binding.pry
     value.each do |row|
       check_economic_data_already_has_district(row, economic_data_by_district)
     end

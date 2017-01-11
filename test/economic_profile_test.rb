@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/economic_profile'
+require_relative '../../headcount/lib/economic_profile'
 
 class EconomicProfileTest < MiniTest::Test
 
@@ -109,5 +109,5 @@ class EconomicProfileTest < MiniTest::Test
 
     assert_in_delta 0.543, profile.title_i_in_year(2015), 0.005
   end
-  
+
 end

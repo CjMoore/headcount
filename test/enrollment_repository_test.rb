@@ -2,7 +2,7 @@
 # SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/enrollment_repository'
+require_relative '../../headcount/lib/enrollment_repository'
 
 class EnrollmentRepositoryTest < MiniTest::Test
 

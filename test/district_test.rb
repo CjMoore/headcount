@@ -2,8 +2,8 @@
 # SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/district'
-require './lib/enrollment'
+require_relative '../../headcount/lib/district'
+require_relative '../../headcount/lib/enrollment'
 
 class DistrictTest < MiniTest::Test
 

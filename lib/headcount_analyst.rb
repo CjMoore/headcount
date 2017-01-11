@@ -1,6 +1,9 @@
 require_relative 'district_repository'
+require_relative 'exceptions'
+
 
 class HeadcountAnalyst
+  include Exceptions
 
   STATE = "COLORADO"
 
@@ -15,12 +18,12 @@ class HeadcountAnalyst
   end
 
   def kindergarten_participation_rate_variation_trend(district, compare)
-    variation_trend = Hash.new
+    trend = Hash.new
     years = get_years_kindergarten(district)
     years.each do |year|
-      variation_trend[year] = enrollment_data_average_in_year(year, district, compare)
+      trend[year] = enrollment_data_average_in_year(year, district, compare)
     end
-    variation_trend
+    trend
   end
 
   def kindergarten_participation_against_high_school_graduation(district)
@@ -84,7 +87,6 @@ class HeadcountAnalyst
 
   def kindergarten_enrollment_data(district)
     validate_na_data(@district_repo.districts[district].enrollment.kindergarten_participation_by_year)
-    # binding.pry
   end
 
   def validate_na_data(data_set)
@@ -103,8 +105,8 @@ class HeadcountAnalyst
     (enrollment_data.values.reduce(:+))/enrollment_data.values.count
   end
 
-  def graduation_data_average(graduation_data)
-    (graduation_data.values.compact.reduce(:+))/graduation_data.values.compact.count
+  def graduation_data_average(grad_data)
+    (grad_data.values.compact.reduce(:+))/grad_data.values.compact.count
   end
 
   def get_graduation_data_average(district)
@@ -158,4 +160,181 @@ class HeadcountAnalyst
       input_data[:across]
     end
   end
+
+  def top_statewide_test_year_over_year_growth(input)
+    statewide_growth = Hash.new
+    @district_repo.districts.keys.each do |district|
+      # by_district=[district, get_calculated_growth(input, district).round(3)]
+      statewide_growth[district] = get_calculated_growth(input, district).round(3)
+    end
+    give_growth_for_top_districts(organize_growth(statewide_growth), input)
+  end
+
+  def organize_growth(statewide_growth)
+    statewide_growth = nix_colorado(statewide_growth)
+    statewide_growth.sort_by {|key, value| -value}
+  end
+
+
+  def nix_colorado(statewide_growth)
+    statewide_growth.delete_if {|key, value| key == STATE}
+  end
+
+  def give_growth_for_top_districts(statewide_growth, input)
+    growth = Array.new
+    statewide_growth.each { |key, value| growth << [key, value]}
+    if input.keys.include?(:top)
+      growth[0..input[:top]]
+    else
+      growth[0]
+    end
+  end
+
+  def get_calculated_growth(input, district)
+    calculate_statewide_growth(get_grade_data(input, district), input, district)
+  end
+
+  def get_proficiency_in_year(input, district, year)
+    get_statwide_test(district).proficient_for_subject_by_grade_in_year(subject(input), grade(input), year)
+  end
+
+  def calculate_statewide_growth(grade_data, input, district)
+    if input.keys.include?(:subject)
+      years = get_valid_years(grade_data[input[:subject]])
+      if years.count == 1 || years.nil? || years.empty?
+        0.0
+      else
+        get_subtracted_proficiency(input, district, years)/(years[-1] - years[0])
+      end
+    else
+      calculate_average_growth(grade_data, input, district)
+    end
+  end
+
+  def calculate_average_growth(grade_data, input, district)
+    to_be_averaged = []
+    grade_data.keys.each do |subject|
+      input[:subject] = subject
+      check_sufficent_data(grade_data, input, district, to_be_averaged)
+      # years = get_valid_years(grade_data[subject])
+      # if years.count ==1 || years.nil? || years.empty?
+      #   to_be_averaged << 0.0
+      # else
+      #   to_be_averaged << get_subtracted_proficiency(input, district, years)/(years[-1] - years[0])
+      #   input.delete_if{|key, value| key == :subject}
+      # end
+    end
+    (to_be_averaged.reduce(:+))/3
+  end
+
+  def check_sufficent_data(grade_data, input, district, to_be_averaged)
+    years = get_valid_years(grade_data[subject])
+    if years.count ==1 || years.nil? || years.empty?
+      to_be_averaged << 0.0
+    else
+      to_be_averaged << get_subtracted_proficiency(input, district, years)/(years[-1] - years[0])
+      input.delete_if{|key, value| key == :subject}
+    end
+  end
+
+  def get_valid_years(grade_data)
+    years = []
+    grade_data.each do |key, value|
+      if value.class == Float && value != 0
+        years << key
+      end
+    end
+    years
+  end
+
+  def first_year(grade_data, input)
+    by_subject(grade_data, input).keys.sort[0]
+  end
+
+  def last_year(grade_data, input)
+    by_subject(grade_data, input).keys.sort[-1]
+  end
+
+  def get_subtracted_proficiency(input, district, years)
+    proficiency(input, district, years[-1]) - proficiency(input, district, years[0])
+  end
+
+  # def proficiency_last(input, district, years)
+  #   get_sufficent_data_last_year(input, district, years[-1])
+  # end
+  #
+  # def proficiency_first(input, district, years)
+  #   get_sufficent_data_first_year(input, district, years[0])
+  # end
+  #
+  # def get_sufficent_data_last_year(input, district, year)
+  #   if proficiency(input, district, year) == 0
+  #     get_sufficent_data_last_year(input, district, (year -1))
+  #   else
+  #     proficiency(input, district, year)
+  #   end
+  # end
+
+  def get_sufficent_data_first_year(input, district, year)
+    if proficiency(input, district, year) == 0
+      get_sufficent_data_first_year(input, district, (year +1))
+    else
+      proficiency(input, district, year)
+    end
+  end
+
+  def proficiency(input, district, year)
+    if get_proficiency_in_year(input, district, year).is_a? Float
+      get_proficiency_in_year(input, district, year)
+    else
+      0.0
+    end
+  end
+
+  def get_grade_data(input, district)
+    check_grade_and_subject_are_sufficient(input, district)
+  end
+
+  def check_grade_and_subject_are_sufficient(input, district)
+    if input.keys.include?(:grade)
+      check_which_grade(input, district)
+    else
+      raise Exceptions::InsufficientInformationError
+    end
+  end
+
+  def check_which_grade(input, district)
+    if grade(input) == 3
+        third_grade_data(district)
+    elsif grade(input) == 8
+        eighth_grade_data(district)
+    else
+      raise UnknownDataError
+    end
+  end
+
+  def grade(input)
+    input[:grade]
+  end
+
+  def subject(input)
+    input[:subject]
+  end
+
+  def get_statwide_test(district)
+    @district_repo.districts[district].statewide_test
+  end
+
+  def third_grade_data(district)
+    get_statwide_test(district).third_grade_data
+  end
+
+  def eighth_grade_data(district)
+    get_statwide_test(district).eighth_grade_data
+  end
+
+  def by_subject(grade_data, input)
+    grade_data[subject(input)]
+  end
+
 end

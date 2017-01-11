@@ -2,7 +2,7 @@
 # SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/headcount_analyst'
+require_relative '../../headcount/lib/headcount_analyst'
 require 'pry'
 
 
@@ -80,7 +80,7 @@ class HeadcountAnalystTest < MiniTest::Test
     compare = {:against => "COLORADO"}
 
     assert_in_delta 0.766,
-    ha.kindergarten_participation_rate_variation(district, compare)
+    ha.kindergarten_rate_variation(district, compare)
   end
 
   def test_kindergarten_participation_rate_compared_to_other_district
@@ -96,7 +96,7 @@ class HeadcountAnalystTest < MiniTest::Test
     compare = {:against => "YUMA SCHOOL DISTRICT 1"}
 
     assert_equal 0.447,
-    ha.kindergarten_participation_rate_variation(district, compare)
+    ha.kindergarten_rate_variation(district, compare)
   end
 
   def test_can_get_enrollment_data_for_a_given_year
@@ -147,7 +147,7 @@ class HeadcountAnalystTest < MiniTest::Test
                 ha.enrollment_data_average_in_year(year, district, compare)
   end
 
-  def test_kindergarten_participation_rate_variation_tren
+  def test_kindergarten_participation_rate_variation_trend
     dr = DistrictRepository.new
     dr.load_data(({:enrollment => {
                   :kindergarten =>
@@ -401,4 +401,89 @@ class HeadcountAnalystTest < MiniTest::Test
     assert ha.kindergarten_participation_correlates_with_high_school_graduation(across)
   end
 
+  def test_can_get_top_statewide_year_over_year_growth
+    skip
+    dr = DistrictRepository.new
+
+    input_data = ({:enrollment => {
+                      :kindergarten => "./test/fixtures/kinder_matching.csv",
+                      :high_school_graduation => "./test/fixtures/hs_matching.csv",
+                    },
+                    :statewide_testing => {
+                      :third_grade => "./test/fixtures/third_grade_basic.csv",
+                      :eighth_grade => "./test/fixtures/eighth_grade_basic.csv",
+                      :math => "./test/fixtures/math_basic.csv",
+                      :reading => "./test/fixtures/reading_basic.csv",
+                      :writing => "./test/fixtures/writing_basic.csv"
+                    }
+                  })
+
+    dr.load_data(input_data)
+
+    ha = HeadcountAnalyst.new(dr)
+    input = {:grade => 3}
+    expected = ["AGUILAR REORGANIZED 6", 0.000]
+
+    assert_equal expected, ha.top_statewide_test_year_over_year_growth(input)
+
+    input2 = {:grade => 3, :subject => :math, :top => 3}
+    expected2 = [["AGUILAR REORGANIZED 6", 0.0], ["ACADEMY 20", -0.004],
+                ["ADAMS COUNTY 14", -0.008]]
+
+    assert_equal expected2, ha.top_statewide_test_year_over_year_growth(input2)
+  end
+
+  def test_get_grade_for_subject
+    skip
+    dr = DistrictRepository.new
+
+    input_data = ({:enrollment => {
+                      :kindergarten => "./test/fixtures/kinder_matching.csv",
+                      :high_school_graduation => "./test/fixtures/hs_matching.csv",
+                    },
+                    :statewide_testing => {
+                      :third_grade => "./test/fixtures/third_grade_basic.csv",
+                      :eighth_grade => "./test/fixtures/eighth_grade_basic.csv",
+                      :math => "./test/fixtures/math_basic.csv",
+                      :reading => "./test/fixtures/reading_basic.csv",
+                      :writing => "./test/fixtures/writing_basic.csv"
+                    }
+                  })
+
+    dr.load_data(input_data)
+
+    ha = HeadcountAnalyst.new(dr)
+
+    expected = {2008=>0.857, 2009=>0.824, 2010=>0.849, 2011=>0.819, 2012=>0.83,
+                2013=>0.855, 2014=>0.834}
+    input = {:grade => 3}
+
+    assert_equal expected,
+    ha.check_which_grade(input, "ACADEMY 20")
+  end
+
+  def test_get_top_statewide_growth_can_validate_data_for_zero
+    dr = DistrictRepository.new
+
+    input_data = ({:enrollment => {
+                      :kindergarten => "./test/fixtures/kinder_statewide_ha.csv",
+                      :high_school_graduation => "./test/fixtures/hs_matching.csv",
+                    },
+                    :statewide_testing => {
+                      :third_grade => "./test/fixtures/third_grade_ha.csv",
+                      :eighth_grade => "./test/fixtures/eighth_grade_basic.csv",
+                      :math => "./test/fixtures/math_basic.csv",
+                      :reading => "./test/fixtures/reading_basic.csv",
+                      :writing => "./test/fixtures/writing_basic.csv"
+                    }
+                  })
+
+    dr.load_data(input_data)
+
+    ha = HeadcountAnalyst.new(dr)
+
+    input = {:grade => 3, :subject => :math}
+    assert_in_delta 0.3, ha.top_statewide_test_year_over_year_growth(input)[1]
+    
+  end
 end

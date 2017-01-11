@@ -2,11 +2,11 @@
 # SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/district_repository'
-require './lib/enrollment_repository'
-require './lib/enrollment'
-require './lib/statewide_test_repository'
-require './lib/statewide_test'
+require_relative '../../headcount/lib/district_repository'
+require_relative'../../headcount/lib/enrollment_repository'
+require_relative '../../headcount/lib/enrollment'
+require_relative '../../headcount/lib/statewide_test_repository'
+require_relative '../../headcount/lib/statewide_test'
 require 'pry'
 
 class DistrictRepoitoryTest < MiniTest::Test

@@ -1,6 +1,7 @@
 require_relative 'statewide_test'
 require_relative 'csv_parser'
 require_relative 'data_parser'
+require_relative 'exceptions'
 require 'pry'
 
 class StatewideTestRepository
@@ -51,7 +52,11 @@ class StatewideTestRepository
   end
 
   def find_by_name(name)
-    @tests[name]
+    if @tests.keys.include?(name)
+      @tests[name]
+    else
+      raise Exceptions::UnknownDataError
+    end
   end
 
 end

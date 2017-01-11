@@ -2,8 +2,8 @@
 # SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/statewide_test'
-require './lib/exceptions'
+require_relative '../../headcount/lib/statewide_test'
+require_relative '../../headcount/lib/exceptions'
 
 class StatewideTestTest < MiniTest::Test
   include Exceptions

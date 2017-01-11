@@ -35,7 +35,7 @@ class StatewideTest
     elsif grade == 8
       @eighth_grade_data
     else
-      "You must enter either 3 or 8"
+      raise Exceptions::UnknownDataError
     end
   end
 

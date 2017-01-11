@@ -2,8 +2,8 @@
 # SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/data_parser'
-require './lib/csv_parser'
+require_relative '../../headcount/lib/data_parser'
+require_relative '../../headcount/lib/csv_parser'
 require 'pry'
 
 
@@ -23,10 +23,10 @@ class DataParserTest < MiniTest::Test
     assert_equal expected, get_enrollment_data_by_district(csv[0])
   end
 
-  def test_data_parser_can_get_statewide_testing_data_by_district
-
-
-  end
+  # def test_data_parser_can_get_statewide_testing_data_by_district
+  #
+  #
+  # end
 
 
 

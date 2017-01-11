@@ -26,10 +26,7 @@ class DistrictRepository
     file_contents.each do |row|
       @districts[(location(row))] = District.new({:name => location(row)})
     end
-    # district_enrollment_link(make_enrollment_repo(input_data))
-    # district_testing_link(make_statewide_testing_repo(input_data))
     make_sub_repos(input_data)
-    # binding.pry
   end
 
   def make_sub_repos(input_data)
@@ -72,7 +69,6 @@ class DistrictRepository
     economic_profile = EconomicProfileRepository.new
     economic_profile.load_data(input_data)
     economic_profile.profiles
-    # binding.pry
   end
 
   def district_economic_profile_link(economic_data)
