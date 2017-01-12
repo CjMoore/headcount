@@ -86,7 +86,11 @@ class HeadcountAnalyst
   end
 
   def kindergarten_enrollment_data(district)
-    validate_na_data(@district_repo.districts[district].enrollment.kindergarten_participation_by_year)
+    validate_na_data(get_participation_by_year(district))
+  end
+
+  def get_participation_by_year(district)
+    districts[district].enrollment.kindergarten_participation_by_year
   end
 
   def validate_na_data(data_set)
@@ -98,7 +102,11 @@ class HeadcountAnalyst
   end
 
   def high_school_graduation_data(district)
-    validate_na_data(@district_repo.districts[district].enrollment.graduation_rate_by_year)
+    validate_na_data(districts[district].enrollment.graduation_rate_by_year)
+  end
+
+  def districts
+    district_repo.districts
   end
 
   def enrollment_data_average(enrollment_data)
@@ -163,9 +171,8 @@ class HeadcountAnalyst
 
   def top_statewide_test_year_over_year_growth(input)
     statewide_growth = Hash.new
-    @district_repo.districts.keys.each do |district|
-      # by_district=[district, get_calculated_growth(input, district).round(3)]
-      statewide_growth[district] = get_calculated_growth(input, district).round(3)
+    districts.keys.each do |district|
+      statewide_growth[district]=get_calculated_growth(input,district).round(3)
     end
     give_growth_for_top_districts(organize_growth(statewide_growth), input)
   end
@@ -204,7 +211,7 @@ class HeadcountAnalyst
       if years.count == 1 || years.nil? || years.empty?
         0.0
       else
-        get_subtracted_proficiency(input, district, years)/(years[-1] - years[0])
+        get_subtracted_proficiency(input, district, years)/(years[-1] -years[0])
       end
     else
       calculate_average_growth(grade_data, input, district)
@@ -216,19 +223,12 @@ class HeadcountAnalyst
     grade_data.keys.each do |subject|
       input[:subject] = subject
       check_sufficent_data(grade_data, input, district, to_be_averaged)
-      # years = get_valid_years(grade_data[subject])
-      # if years.count ==1 || years.nil? || years.empty?
-      #   to_be_averaged << 0.0
-      # else
-      #   to_be_averaged << get_subtracted_proficiency(input, district, years)/(years[-1] - years[0])
-      #   input.delete_if{|key, value| key == :subject}
-      # end
     end
     (to_be_averaged.reduce(:+))/3
   end
 
   def check_sufficent_data(grade_data, input, district, to_be_averaged)
-    years = get_valid_years(grade_data[subject])
+    years = get_valid_years(grade_data[input[:subject]])
     if years.count ==1 || years.nil? || years.empty?
       to_be_averaged << 0.0
     else
@@ -256,24 +256,8 @@ class HeadcountAnalyst
   end
 
   def get_subtracted_proficiency(input, district, years)
-    proficiency(input, district, years[-1]) - proficiency(input, district, years[0])
+    proficiency(input,district,years[-1])-proficiency(input, district, years[0])
   end
-
-  # def proficiency_last(input, district, years)
-  #   get_sufficent_data_last_year(input, district, years[-1])
-  # end
-  #
-  # def proficiency_first(input, district, years)
-  #   get_sufficent_data_first_year(input, district, years[0])
-  # end
-  #
-  # def get_sufficent_data_last_year(input, district, year)
-  #   if proficiency(input, district, year) == 0
-  #     get_sufficent_data_last_year(input, district, (year -1))
-  #   else
-  #     proficiency(input, district, year)
-  #   end
-  # end
 
   def get_sufficent_data_first_year(input, district, year)
     if proficiency(input, district, year) == 0
@@ -322,7 +306,7 @@ class HeadcountAnalyst
   end
 
   def get_statwide_test(district)
-    @district_repo.districts[district].statewide_test
+    districts[district].statewide_test
   end
 
   def third_grade_data(district)

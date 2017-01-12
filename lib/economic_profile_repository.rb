@@ -28,14 +28,30 @@ class EconomicProfileRepository
     districts.each do |district|
       @profiles[district] = EconomicProfile.new({:name => district,
                                                 :median_household_income =>
-                                                files[:median_household_income][district],
+                                                median_income(files)[district],
                                                 :children_in_poverty =>
-                                                files[:children_in_poverty][district],
+                                                child_poverty(files)[district],
                                                 :free_or_reduced_price_lunch =>
-                                                files[:free_or_reduced_price_lunch][district],
-                                                :title_i =>
+                                                free_lunch(files)[district],
+                                                title_i(files) =>
                                                 files[:title_i][district]})
     end
+  end
+
+  def median_income(files)
+    files[:median_household_income]
+  end
+
+  def child_poverty(files)
+    files[:children_in_poverty]
+  end
+
+  def free_lunch(files)
+    files[:free_or_reduced_price_lunch]
+  end
+
+  def title_i(files)
+    files[:title_i]
   end
 
   def get_files_by_type(files)

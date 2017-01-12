@@ -80,7 +80,7 @@ class HeadcountAnalystTest < MiniTest::Test
     compare = {:against => "COLORADO"}
 
     assert_in_delta 0.766,
-    ha.kindergarten_rate_variation(district, compare)
+    ha.kindergarten_participation_rate_variation(district, compare)
   end
 
   def test_kindergarten_participation_rate_compared_to_other_district
@@ -96,7 +96,7 @@ class HeadcountAnalystTest < MiniTest::Test
     compare = {:against => "YUMA SCHOOL DISTRICT 1"}
 
     assert_equal 0.447,
-    ha.kindergarten_rate_variation(district, compare)
+    ha.kindergarten_participation_rate_variation(district, compare)
   end
 
   def test_can_get_enrollment_data_for_a_given_year
@@ -484,6 +484,6 @@ class HeadcountAnalystTest < MiniTest::Test
 
     input = {:grade => 3, :subject => :math}
     assert_in_delta 0.3, ha.top_statewide_test_year_over_year_growth(input)[1]
-    
+
   end
 end
