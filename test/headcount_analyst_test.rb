@@ -31,7 +31,6 @@ class HeadcountAnalystTest < MiniTest::Test
     district_name = "ACADEMY 20"
 
     enrollment_data = {2007 => 0.391, 2011 => 0.489}
-    # binding.pry
     assert_equal enrollment_data,
                 ha.kindergarten_enrollment_data(district_name)
 
@@ -402,7 +401,6 @@ class HeadcountAnalystTest < MiniTest::Test
   end
 
   def test_can_get_top_statewide_year_over_year_growth
-    skip
     dr = DistrictRepository.new
 
     input_data = ({:enrollment => {
@@ -431,35 +429,6 @@ class HeadcountAnalystTest < MiniTest::Test
                 ["ADAMS COUNTY 14", -0.008]]
 
     assert_equal expected2, ha.top_statewide_test_year_over_year_growth(input2)
-  end
-
-  def test_get_grade_for_subject
-    skip
-    dr = DistrictRepository.new
-
-    input_data = ({:enrollment => {
-                      :kindergarten => "./test/fixtures/kinder_matching.csv",
-                      :high_school_graduation => "./test/fixtures/hs_matching.csv",
-                    },
-                    :statewide_testing => {
-                      :third_grade => "./test/fixtures/third_grade_basic.csv",
-                      :eighth_grade => "./test/fixtures/eighth_grade_basic.csv",
-                      :math => "./test/fixtures/math_basic.csv",
-                      :reading => "./test/fixtures/reading_basic.csv",
-                      :writing => "./test/fixtures/writing_basic.csv"
-                    }
-                  })
-
-    dr.load_data(input_data)
-
-    ha = HeadcountAnalyst.new(dr)
-
-    expected = {2008=>0.857, 2009=>0.824, 2010=>0.849, 2011=>0.819, 2012=>0.83,
-                2013=>0.855, 2014=>0.834}
-    input = {:grade => 3}
-
-    assert_equal expected,
-    ha.check_which_grade(input, "ACADEMY 20")
   end
 
   def test_get_top_statewide_growth_can_validate_data_for_zero

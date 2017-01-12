@@ -44,6 +44,4 @@ class EconomicProfileRepositoryTest < MiniTest::Test
     assert_equal "ACADEMY 20", epr.find_by_name("ACADEMY 20").name
   end
 
-
-
 end

@@ -23,12 +23,5 @@ class DataParserTest < MiniTest::Test
     assert_equal expected, get_enrollment_data_by_district(csv[0])
   end
 
-  # def test_data_parser_can_get_statewide_testing_data_by_district
-  #
-  #
-  # end
-
-
-
 
 end

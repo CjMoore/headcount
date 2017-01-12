@@ -38,5 +38,4 @@ class DistrictTest < MiniTest::Test
     assert_equal expected, district.enrollment.graduation_rate_by_year
   end
 
-
 end
